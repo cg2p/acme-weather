@@ -15,18 +15,10 @@ export default function Header() {
     <AppBar position="relative" color="default" elevation={0} className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
         <Typography variant="h6" color="inherit" noWrap className={classes.toolbarTitle}>
-          <Link href="/">Reverse
+          <Link href="/">Weather API
           </Link>
           
         </Typography>
-        <nav>
-          <Link variant="button" color="textPrimary" href="/about" className={classes.link}>
-            About
-          </Link>
-        </nav>
-        <Button href="/reverse" color="primary" variant="outlined" className={classes.link}>
-          Reverse
-        </Button>
       </Toolbar>
     </AppBar>     
     </React.Fragment>
