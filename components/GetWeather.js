@@ -14,8 +14,9 @@ function GetWeather () {
   const classes = useStyles();
     
   const [textInput, setTextInput] = useState('');
-  const [textOutput, setTextOutput] = useState('');
-  const [error, setError] = useState('');
+  const [tempOutput, setTempOutput] = useState('');
+  const [conditionOutput, setConditionOutput] = useState('');
+  //const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false)
     
   const handleTextInputChange = (event) => {
@@ -27,10 +28,11 @@ function GetWeather () {
       setSubmitting(true);
   
       var inputText = textInput;
-      var outputText = textOutput;
+      //var outputText = textOutput;
   
       setTextInput("");
-      setTextOutput(""); 
+      setTempOutput(""); 
+      setConditionOutput(""); 
       setSubmitting(false);
 
       const settings = {
@@ -42,11 +44,12 @@ function GetWeather () {
           location: inputText
         }),
       };
+ 
       try {
           const fetchResponse = await fetch(`/api/weather`, settings);
           const data = await fetchResponse.json();
-          setTextOutput(data.location); 
-          console.log('loc ', data.location);
+          setTempOutput("Temp (C) is " + data.temp); 
+          setConditionOutput("Condition is " + data.condition); 
           return data;
       } catch (e) {
         setTextOutput("Error: ", e); 
@@ -86,7 +89,10 @@ function GetWeather () {
         <Grid container spacing={1}>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                {textOutput}
+                {tempOutput}
+              </Paper>
+              <Paper className={classes.paper}>
+                {conditionOutput}
               </Paper>
             </Grid>
         </Grid>
