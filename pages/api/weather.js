@@ -1,10 +1,17 @@
+import { resolve } from "uri-js";
+
 export default function handler(request, response) {
 
     // http://api.weatherapi.com/v1/current.json?key=9137c37de7274c02b7b35912211308&q=London&aqi=no
+    
     const apikey = `9137c37de7274c02b7b35912211308`;
+    // const apikey = process.env.WEATHER_KEY;
+    if (apikey == null) {
+        response.status(401);
+    }
     
     const loc = request.body.location;
-    console.log("loc", loc);
+    console.log("get weather for location ", loc);
 
     const settings = {
         method: 'GET',
@@ -14,7 +21,7 @@ export default function handler(request, response) {
         }
     };
 
-    try {
+    return new Promise((resolve, reject) => {
         const fetchResponse = fetch('http://api.weatherapi.com/v1/current.json?' + new URLSearchParams({
             key: apikey,
             q: loc,
@@ -26,11 +33,12 @@ export default function handler(request, response) {
             return res.json();
         })
         .then((data) => {
-           // const obj = data.map((entry) => (
-           //     entry.location
-           // );
+            if(data.hasOwnProperty('error')) {
+                console.log(data.error.code);
+                response.status(400).json({ error: data.error.message });
+                resolve();
+            }
             
-           console.log(data);
            const obj = {
                 temp : data.current.temp_c,
                 condition: data.current.condition.text
@@ -38,30 +46,11 @@ export default function handler(request, response) {
             console.log(obj);
             
             response.status(200).send(obj);
+            resolve();
+        })
+        .catch(error => {
+            reject();
         });
-    
-    } catch (e) {
-        return e;
-    }  
-//        const data = fetchResponse.json();
-  //      console.log('data ', data);
- 
-     //   response.status(200).json({ temp_c: data.temp_c, condition: data.condition.text });
+    });
 
-      /*
-    try {
-        const fetchResponse = fetch('http://api.weatherapi.com/v1/current.json?' + new URLSearchParams({
-                key: apikey,
-                q: loc,
-            }),
-            settings
-        );
-        const data = fetchResponse.json();
-        console.log('data ', data);
- 
-        response.status(200).json({ temp_c: data.temp_c, condition: data.condition.text });
-    } catch (e) {
-        return e;
-    }    
-    */
 }

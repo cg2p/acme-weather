@@ -17,7 +17,7 @@
   "scripts": {
     "test": "jest",
     "dev": "next",
-    "build": "next build && ./psql.sh",
+    "build": "next build",
     "start": "next start"
   },
   "devDependencies": {
